@@ -3,7 +3,7 @@ import { useContract, useOwnedNFTs } from "@thirdweb-dev/react";
 import React from "react";
 import { MARKETPLACE_ADDRESS, NFT_COLLECTION_ADDRESS } from "../../const/addresses";
 import { useRouter } from "next/router";
-import NFTGrid from "../../components/NFTGrid";
+import NFTGrid from "../../components/NFT/NFTGrid";
 
 export default function ProfilePage() {
     const router = useRouter();

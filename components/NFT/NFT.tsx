@@ -3,7 +3,7 @@ import { NFT } from "@thirdweb-dev/sdk";
 import { 
     MARKETPLACE_ADDRESS, 
     NFT_COLLECTION_ADDRESS 
-} from "../const/addresses";
+} from "../../const/addresses";
 import { ThirdwebNftMedia, useContract, useValidDirectListings, useValidEnglishAuctions } from "@thirdweb-dev/react";
 import { Box, Flex, Skeleton, Text } from "@chakra-ui/react";
 

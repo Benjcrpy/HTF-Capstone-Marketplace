@@ -3,7 +3,7 @@ import { SimpleGrid, Skeleton, Text } from "@chakra-ui/react";
 import React from "react";
 import NFT from "./NFT";
 import Link from "next/link";
-import { NFT_COLLECTION_ADDRESS } from "../const/addresses";
+import { NFT_COLLECTION_ADDRESS } from "../../const/addresses";
 
 type Props = {
     isLoading: boolean;

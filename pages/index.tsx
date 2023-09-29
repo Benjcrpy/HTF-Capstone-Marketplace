@@ -58,13 +58,7 @@ const Home: NextPage = () => {
                 <Link className={styles.heroCta} href="/buy">
                   SHOP
                 </Link>
-                <Link
-                  className={styles.secondaryCta}
-                  href="https://github.com/thirdweb-example/marketplace-v3"
-                  target="_blank"
-                >
-                  GitHub
-                </Link>
+                
               </div>
             </div>
           </div>

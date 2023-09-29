@@ -1,57 +1,76 @@
-import { Box, Button, Card, Container, Flex, Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react";
-import { ThirdwebNftMedia, useAddress, useContract, useOwnedNFTs } from "@thirdweb-dev/react";
-import React, { useState } from "react";
-import { NFT_COLLECTION_ADDRESS } from "../const/addresses";
-import type { NFT as NFTType } from "@thirdweb-dev/sdk";
-import NFTGrid from "../components/NFTGrid";
-import SaleInfo from "../components/SaleInfo";
-
-export default function Sell() {
+import {
+    ThirdwebNftMedia,
+    useAddress,
+    useContract,
+    useOwnedNFTs,
+  } from "@thirdweb-dev/react";
+  import React, { useState } from "react";
+  import Container from "../components/Container/Container";
+  import NFTGrid from "../components/NFT/NFTGrid";
+  import { NFT_COLLECTION_ADDRESS } from "../const/addresses";
+  import tokenPageStyles from "../styles/Token.module.css";
+  import { NFT as NFTType } from "@thirdweb-dev/sdk";
+  import SaleInfo from "../components/SaleInfo/SaleInfo";
+  
+  export default function Sell() {
+    // Load all of the NFTs from the NFT Collection
     const { contract } = useContract(NFT_COLLECTION_ADDRESS);
     const address = useAddress();
     const { data, isLoading } = useOwnedNFTs(contract, address);
-
-    const [selectedNFT, setSelectedNFT] = useState<NFTType>();
-
+  
+    const [selectedNft, setSelectedNft] = useState<NFTType>();
+  
     return (
-        <Container maxW={"1200px"} p={5}>
-            <Heading>Sell NFTs</Heading>
-            <Text>Select which NFT to sell below.</Text>
-            {!selectedNFT ? (
-                <NFTGrid
-                    data={data}
-                    isLoading={isLoading}
-                    overrideOnclickBehavior={(nft) => {
-                        setSelectedNFT(nft);
-                    }}
-                    emptyText={"You don't own any NFTs yet from this collection."}
+      <Container maxWidth="lg">
+        <h1>Sell NFTs</h1>
+        {!selectedNft ? (
+          <>
+            <p>Select which NFT you&rsquo;d like to sell below.</p>
+            <NFTGrid
+              data={data}
+              isLoading={isLoading}
+              overrideOnclickBehavior={(nft) => {
+                setSelectedNft(nft);
+              }}
+              emptyText={
+                "Looks like you don't own any NFTs in this collection. Head to the buy page to buy some!"
+              }
+            />
+          </>
+        ) : (
+          <div className={tokenPageStyles.container} style={{ marginTop: 0 }}>
+            <div className={tokenPageStyles.metadataContainer}>
+              <div className={tokenPageStyles.imageContainer}>
+                <ThirdwebNftMedia
+                  metadata={selectedNft.metadata}
+                  className={tokenPageStyles.image}
                 />
-            ) : (
-                <Flex justifyContent={"center"} my={10}>
-                    <Card w={"75%"}>
-                        <SimpleGrid columns={2} spacing={10} p={5}>
-                            <ThirdwebNftMedia
-                                metadata={selectedNFT.metadata}
-                                width="100%"
-                                height="100%"
-                            />
-                            <Stack>
-                                <Flex justifyContent={"right"}>
-                                    <Button
-                                        onClick={() => {
-                                            setSelectedNFT(undefined);
-                                        }}
-                                    >X</Button>
-                                </Flex>
-                                <Heading>{selectedNFT.metadata.name}</Heading>
-                                <SaleInfo
-                                    nft={selectedNFT}
-                                />
-                            </Stack>
-                        </SimpleGrid>
-                    </Card>
-                </Flex>
-            )}
-        </Container>
-    )
-}
+                <button
+                  onClick={() => {
+                    setSelectedNft(undefined);
+                  }}
+                  className={tokenPageStyles.crossButton}
+                >
+                  X
+                </button>
+              </div>
+            </div>
+  
+            <div className={tokenPageStyles.listingContainer}>
+              <p>You&rsquo;re about to list the following item for sale.</p>
+              <h1 className={tokenPageStyles.title}>
+                {selectedNft.metadata.name}
+              </h1>
+              <p className={tokenPageStyles.collectionName}>
+                Token ID #{selectedNft.metadata.id}
+              </p>
+  
+              <div className={tokenPageStyles.pricingContainer}>
+                <SaleInfo nft={selectedNft} />
+              </div>
+            </div>
+          </div>
+        )}
+      </Container>
+    );
+  }
