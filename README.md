@@ -18,7 +18,7 @@ npx thirdweb create --template next-typescript-starter (name of the project)
 
 You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-On `pages/_app.tsx`, you'll find our `ThirdwebProvider` wrapping your app, this is necessary for our [hooks](https://portal.thirdweb.com/react)
+On `pages/_app.tsx`, you'll find our `ThirdwebProvider` wrapping your application.
 
 
 ## Environment Variables
