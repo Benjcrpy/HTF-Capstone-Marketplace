@@ -2,7 +2,11 @@
 
 ## Tools
 
-
+- [React]
+- [TypeScirpt]
+- [Charak]
+- [Solidity]
+- [Next.JS]
 
 
 
