@@ -1,210 +1,365 @@
-import { Avatar, Box, Container, Flex, Input, SimpleGrid, Skeleton, Stack, Text } from "@chakra-ui/react";
-import { MediaRenderer, ThirdwebNftMedia, Web3Button, useContract, useMinimumNextBid, useValidDirectListings, useValidEnglishAuctions } from "@thirdweb-dev/react";
-import { NFT, ThirdwebSDK } from "@thirdweb-dev/sdk";
-import React, { useState } from "react";
-import { 
+import {
+    MediaRenderer,
+    ThirdwebNftMedia,
+    useContract,
+    useContractEvents,
+    useValidDirectListings,
+    useValidEnglishAuctions,
+    Web3Button,
+  } from "@thirdweb-dev/react";
+  import React, { useState } from "react";
+  import Container from "../../../components/Container/Container";
+  import { GetStaticProps, GetStaticPaths } from "next";
+  import { NFT, ThirdwebSDK } from "@thirdweb-dev/sdk";
+  import {
+    ETHERSCAN_URL,
     MARKETPLACE_ADDRESS,
-    NFT_COLLECTION_ADDRESS 
-} from "../../../const/addresses";
-import { GetStaticPaths, GetStaticProps } from "next";
-import Link from "next/link";
-
-type Props = {
+    NETWORK,
+    NFT_COLLECTION_ADDRESS,
+  } from "../../../const/addresses";
+  import styles from "../../../styles/Token.module.css";
+  import Link from "next/link";
+  import randomColor from "../../../util/randomColor";
+  import Skeleton from "../../../components/Skeleton/Skeleton";
+  import toast, { Toaster } from "react-hot-toast";
+  import toastStyle from "../../../util/toastConfig";
+  
+  type Props = {
     nft: NFT;
     contractMetadata: any;
-};
-
-export default function TokenPage({ nft, contractMetadata }: Props) {
-    const { contract: marketplace, isLoading: loadingMarketplace } = 
-        useContract(
-            MARKETPLACE_ADDRESS, 
-            "marketplace-v3"
-        );
-
-    const { contract: nftCollection } = useContract(NFT_COLLECTION_ADDRESS);
-
-    const { data: directListing, isLoading: loadingDirectListing } = 
-        useValidDirectListings(marketplace, {
-            tokenContract: NFT_COLLECTION_ADDRESS, 
-            tokenId: nft.metadata.id,
-        });
-
-    //Add these for auction section
+  };
+  
+  const [randomColor1, randomColor2] = [randomColor(), randomColor()];
+  
+  export default function TokenPage({ nft, contractMetadata }: Props) {
     const [bidValue, setBidValue] = useState<string>();
-
+  
+    // Connect to marketplace smart contract
+    const { contract: marketplace, isLoading: loadingContract } = useContract(
+      MARKETPLACE_ADDRESS,
+      "marketplace-v3"
+    );
+  
+    // Connect to NFT Collection smart contract
+    const { contract: nftCollection } = useContract(NFT_COLLECTION_ADDRESS);
+  
+    const { data: directListing, isLoading: loadingDirect } =
+      useValidDirectListings(marketplace, {
+        tokenContract: NFT_COLLECTION_ADDRESS,
+        tokenId: nft.metadata.id,
+      });
+  
+    // 2. Load if the NFT is for auction
     const { data: auctionListing, isLoading: loadingAuction } =
-        useValidEnglishAuctions(marketplace, {
-            tokenContract: NFT_COLLECTION_ADDRESS,
+      useValidEnglishAuctions(marketplace, {
+        tokenContract: NFT_COLLECTION_ADDRESS,
+        tokenId: nft.metadata.id,
+      });
+  
+    // Load historical transfer events: TODO - more event types like sale
+    const { data: transferEvents, isLoading: loadingTransferEvents } =
+      useContractEvents(nftCollection, "Transfer", {
+        queryFilter: {
+          filters: {
             tokenId: nft.metadata.id,
+          },
+          order: "desc",
+        },
+      });
+  
+    async function createBidOrOffer() {
+      let txResult;
+      if (!bidValue) {
+        toast(`Please enter a bid value`, {
+          icon: "❌",
+          style: toastStyle,
+          position: "bottom-center",
         });
-
+        return;
+      }
+  
+      if (auctionListing?.[0]) {
+        txResult = await marketplace?.englishAuctions.makeBid(
+          auctionListing[0].id,
+          bidValue
+        );
+      } else if (directListing?.[0]) {
+        txResult = await marketplace?.offers.makeOffer({
+          assetContractAddress: NFT_COLLECTION_ADDRESS,
+          tokenId: nft.metadata.id,
+          totalPrice: bidValue,
+        });
+      } else {
+        throw new Error("No valid listing found for this NFT");
+      }
+  
+      return txResult;
+    }
+  
     async function buyListing() {
-        let txResult;
-
-        //Add for auction section
-        if (auctionListing?.[0]) {
-            txResult = await marketplace?.englishAuctions.buyoutAuction(
-                auctionListing[0].id
-            );
-        } else if (directListing?.[0]){
-            txResult = await marketplace?.directListings.buyFromListing(
-                directListing[0].id,
-                1
-            );
-        } else {
-            throw new Error("No listing found");
-        }
-
-        return txResult;
+      let txResult;
+  
+      if (auctionListing?.[0]) {
+        txResult = await marketplace?.englishAuctions.buyoutAuction(
+          auctionListing[0].id
+        );
+      } else if (directListing?.[0]) {
+        txResult = await marketplace?.directListings.buyFromListing(
+          directListing[0].id,
+          1
+        );
+      } else {
+        throw new Error("No valid listing found for this NFT");
+      }
+      return txResult;
     }
-
-    
-    async function createBidOffer() {
-        let txResult;
-        if(!bidValue) {
-            return;
-        }
-
-        if (auctionListing?.[0]) {
-            txResult = await marketplace?.englishAuctions.makeBid(
-                auctionListing[0].id,
-                bidValue
-            );
-        } else if (directListing?.[0]){
-            txResult = await marketplace?.offers.makeOffer({
-                assetContractAddress: NFT_COLLECTION_ADDRESS,
-                tokenId: nft.metadata.id,
-                totalPrice: bidValue,
-            })
-        } else {
-            throw new Error("No listing found");
-        }
-        return txResult;
-    }
-    
+  
     return (
-        <Container maxW={"1200px"} p={5} my={5}>
-            <SimpleGrid columns={2} spacing={6}>
-                <Stack spacing={"20px"}>
-                    <Box borderRadius={"6px"} overflow={"hidden"}>
-                        <Skeleton isLoaded={!loadingMarketplace && !loadingDirectListing}>
-                            <ThirdwebNftMedia
-                                metadata={nft.metadata}
-                                width="100%"
-                                height="100%"
-                            />
-                        </Skeleton>
-                    </Box>
-                    <Box>
-                        <Text fontWeight={"bold"}>Description:</Text>
-                        <Text>{nft.metadata.description}</Text>
-                    </Box>
-                    <Box>
-                        <Text fontWeight={"bold"}>Traits:</Text>
-                        <SimpleGrid columns={2} spacing={4}>
-                        {Object.entries(nft?.metadata?.attributes || {}).map(
-                        ([key, value]) => (
-                            <Flex key={key} direction={"column"} alignItems={"center"} justifyContent={"center"} borderWidth={1} p={"8px"} borderRadius={"4px"}>
-                                <Text fontSize={"small"}>{value.trait_type}</Text>
-                                <Text fontSize={"small"} fontWeight={"bold"}>{value.value}</Text>
-                            </Flex>
-                        )
-                        )}
-                        </SimpleGrid>
-                    </Box>
-                </Stack>
-                
-                <Stack spacing={"20px"}>
-                    {contractMetadata && (
-                        <Flex alignItems={"center"}>
-                            <Box borderRadius={"4px"} overflow={"hidden"} mr={"10px"}>
-                                <MediaRenderer
-                                    src={contractMetadata.image}
-                                    height="32px"
-                                    width="32px"
-                                />
-                            </Box>
-                            <Text fontWeight={"bold"}>{contractMetadata.name}</Text>
-                        </Flex>
-                    )}
-                    <Box mx={2.5}>
-                        <Text fontSize={"4xl"} fontWeight={"bold"}>{nft.metadata.name}</Text>
+      <>
+        <Toaster position="bottom-center" reverseOrder={false} />
+        <Container maxWidth="lg">
+          <div className={styles.container}>
+            <div className={styles.metadataContainer}>
+              <ThirdwebNftMedia
+                metadata={nft.metadata}
+                className={styles.image}
+              />
+  
+              <div className={styles.descriptionContainer}>
+                <h3 className={styles.descriptionTitle}>Description</h3>
+                <p className={styles.description}>{nft.metadata.description}</p>
+  
+                <h3 className={styles.descriptionTitle}>Traits</h3>
+  
+                <div className={styles.traitsContainer}>
+                  {Object.entries(nft?.metadata?.attributes || {}).map(
+                    ([key, value]) => (
+                      <div className={styles.traitContainer} key={key}>
+                        <p className={styles.traitName}>{key}</p>
+                        <p className={styles.traitValue}>
+                          {value?.toString() || ""}
+                        </p>
+                      </div>
+                    )
+                  )}
+                </div>
+  
+                <h3 className={styles.descriptionTitle}>History</h3>
+  
+                <div className={styles.traitsContainer}>
+                  {transferEvents?.map((event, index) => (
+                    <div
+                      key={event.transaction.transactionHash}
+                      className={styles.eventsContainer}
+                    >
+                      <div className={styles.eventContainer}>
+                        <p className={styles.traitName}>Event</p>
+                        <p className={styles.traitValue}>
+                          {
+                            // if last event in array, then it's a mint
+                            index === transferEvents.length - 1
+                              ? "Mint"
+                              : "Transfer"
+                          }
+                        </p>
+                      </div>
+  
+                      <div className={styles.eventContainer}>
+                        <p className={styles.traitName}>From</p>
+                        <p className={styles.traitValue}>
+                          {event.data.from?.slice(0, 4)}...
+                          {event.data.from?.slice(-2)}
+                        </p>
+                      </div>
+  
+                      <div className={styles.eventContainer}>
+                        <p className={styles.traitName}>To</p>
+                        <p className={styles.traitValue}>
+                          {event.data.to?.slice(0, 4)}...
+                          {event.data.to?.slice(-2)}
+                        </p>
+                      </div>
+  
+                      <div className={styles.eventContainer}>
                         <Link
-                            href={`/profile/${nft.owner}`}
+                          className={styles.txHashArrow}
+                          href={`${ETHERSCAN_URL}/tx/${event.transaction.transactionHash}`}
+                          target="_blank"
                         >
-                            <Flex direction={"row"} alignItems={"center"}>
-                                <Avatar  src='https://bit.ly/broken-link' h={"24px"} w={"24px"} mr={"10px"}/>
-                                <Text fontSize={"small"}>{nft.owner.slice(0,6)}...{nft.owner.slice(-4)}</Text>
-                            </Flex>
+                          ↗
                         </Link>
-                    </Box>
-                    
-                    <Stack backgroundColor={"#EEE"} p={2.5} borderRadius={"6px"}>
-                        <Text color={"darkgray"}>Price:</Text>
-                        <Skeleton isLoaded={!loadingMarketplace && !loadingDirectListing}>
-                            {directListing && directListing[0] ? (
-                                <Text fontSize={"3xl"} fontWeight={"bold"}>
-                                    {directListing[0]?.currencyValuePerToken.displayValue}
-                                    {" " + directListing[0]?.currencyValuePerToken.symbol}
-                                </Text>
-                            ) : auctionListing && auctionListing[0] ? (
-                                <Text fontSize={"3xl"} fontWeight={"bold"}>
-                                    {auctionListing[0]?.buyoutCurrencyValue.displayValue}
-                                    {" " + auctionListing[0]?.buyoutCurrencyValue.symbol}
-                                </Text>
-                            ) : (
-                                <Text fontSize={"3xl"} fontWeight={"bold"}>Not for sale</Text>
-                            )}
-                        </Skeleton>
-                        <Skeleton isLoaded={!loadingAuction}>
-                            {auctionListing && auctionListing[0] && (
-                                <Flex direction={"column"}>
-                                    <Text color={"darkgray"}>Bids starting from</Text>
-                                <Text fontSize={"3xl"} fontWeight={"bold"}>
-                                    {auctionListing[0]?.minimumBidCurrencyValue.displayValue}
-                                    {" " + auctionListing[0]?.minimumBidCurrencyValue.symbol}
-                                </Text>
-                                <Text></Text>
-                                </Flex>
-                            )}
-                        </Skeleton>
-                    </Stack>
-                    <Skeleton isLoaded={!loadingMarketplace || !loadingDirectListing || !loadingAuction}>
-                        <Stack spacing={5}>
-                            <Web3Button
-                                contractAddress={MARKETPLACE_ADDRESS}
-                                action={async () => buyListing()}
-                                isDisabled={(!auctionListing || !auctionListing[0]) && (!directListing || !directListing[0])}
-                            >Buy at asking price</Web3Button>
-                            <Text textAlign={"center"}>or</Text>
-                            <Flex direction={"column"}>
-                                <Input
-                                    mb={5}
-                                    defaultValue={
-                                        auctionListing?.[0]?.minimumBidCurrencyValue?.displayValue || 0
-                                    }
-                                    type={"number"}
-                                    onChange={(e) => setBidValue(e.target.value)}
-                                />
-                                <Web3Button
-                                    contractAddress={MARKETPLACE_ADDRESS}
-                                    action={async () => await createBidOffer()}
-                                    isDisabled={!auctionListing || !auctionListing[0]}
-                                >Place Bid</Web3Button>
-                            </Flex>
-                        </Stack>
-                    </Skeleton>
-                </Stack>
-            </SimpleGrid>
-            
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+  
+            <div className={styles.listingContainer}>
+              {contractMetadata && (
+                <div className={styles.contractMetadataContainer}>
+                  <MediaRenderer
+                    src={contractMetadata.image}
+                    className={styles.collectionImage}
+                  />
+                  <p className={styles.collectionName}>{contractMetadata.name}</p>
+                </div>
+              )}
+              <h1 className={styles.title}>{nft.metadata.name}</h1>
+              <p className={styles.collectionName}>Token ID #{nft.metadata.id}</p>
+  
+              <Link
+                href={`/profile/${nft.owner}`}
+                className={styles.nftOwnerContainer}
+              >
+                {/* Random linear gradient circle shape */}
+                <div
+                  className={styles.nftOwnerImage}
+                  style={{
+                    background: `linear-gradient(90deg, ${randomColor1}, ${randomColor2})`,
+                  }}
+                />
+                <div className={styles.nftOwnerInfo}>
+                  <p className={styles.label}>Current Owner</p>
+                  <p className={styles.nftOwnerAddress}>
+                    {nft.owner.slice(0, 8)}...{nft.owner.slice(-4)}
+                  </p>
+                </div>
+              </Link>
+  
+              <div className={styles.pricingContainer}>
+                {/* Pricing information */}
+                <div className={styles.pricingInfo}>
+                  <p className={styles.label}>Price</p>
+                  <div className={styles.pricingValue}>
+                    {loadingContract || loadingDirect || loadingAuction ? (
+                      <Skeleton width="120" height="24" />
+                    ) : (
+                      <>
+                        {directListing && directListing[0] ? (
+                          <>
+                            {directListing[0]?.currencyValuePerToken.displayValue}
+                            {" " + directListing[0]?.currencyValuePerToken.symbol}
+                          </>
+                        ) : auctionListing && auctionListing[0] ? (
+                          <>
+                            {auctionListing[0]?.buyoutCurrencyValue.displayValue}
+                            {" " + auctionListing[0]?.buyoutCurrencyValue.symbol}
+                          </>
+                        ) : (
+                          "Not for sale"
+                        )}
+                      </>
+                    )}
+                  </div>
+  
+                  <div>
+                    {loadingAuction ? (
+                      <Skeleton width="120" height="24" />
+                    ) : (
+                      <>
+                        {auctionListing && auctionListing[0] && (
+                          <>
+                            <p className={styles.label} style={{ marginTop: 12 }}>
+                              Bids starting from
+                            </p>
+  
+                            <div className={styles.pricingValue}>
+                              {
+                                auctionListing[0]?.minimumBidCurrencyValue
+                                  .displayValue
+                              }
+                              {" " +
+                                auctionListing[0]?.minimumBidCurrencyValue.symbol}
+                            </div>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+  
+              {loadingContract || loadingDirect || loadingAuction ? (
+                <Skeleton width="100%" height="164" />
+              ) : (
+                <>
+                  <Web3Button
+                    contractAddress={MARKETPLACE_ADDRESS}
+                    action={async () => await buyListing()}
+                    className={styles.btn}
+                    onSuccess={() => {
+                      toast(`Purchase success!`, {
+                        icon: "✅",
+                        style: toastStyle,
+                        position: "bottom-center",
+                      });
+                    }}
+                    onError={(e) => {
+                      toast(`Purchase failed! Reason: ${e.message}`, {
+                        icon: "❌",
+                        style: toastStyle,
+                        position: "bottom-center",
+                      });
+                    }}
+                  >
+                    Buy at asking price
+                  </Web3Button>
+  
+                  <div className={`${styles.listingTimeContainer} ${styles.or}`}>
+                    <p className={styles.listingTime}>or</p>
+                  </div>
+  
+                  <input
+                    className={styles.input}
+                    defaultValue={
+                      auctionListing?.[0]?.minimumBidCurrencyValue
+                        ?.displayValue || 0
+                    }
+                    type="number"
+                    step={0.000001}
+                    onChange={(e) => {
+                      setBidValue(e.target.value);
+                    }}
+                  />
+  
+                  <Web3Button
+                    contractAddress={MARKETPLACE_ADDRESS}
+                    action={async () => await createBidOrOffer()}
+                    className={styles.btn}
+                    onSuccess={() => {
+                      toast(`Bid success!`, {
+                        icon: "✅",
+                        style: toastStyle,
+                        position: "bottom-center",
+                      });
+                    }}
+                    onError={(e) => {
+                      console.log(e);
+                      toast(`Bid failed! Reason: ${e.message}`, {
+                        icon: "❌",
+                        style: toastStyle,
+                        position: "bottom-center",
+                      });
+                    }}
+                  >
+                    Place bid
+                  </Web3Button>
+                </>
+              )}
+            </div>
+          </div>
         </Container>
-    )
-};
-
-export const getStaticProps: GetStaticProps = async (context) => {
+      </>
+    );
+  }
+  
+  export const getStaticProps: GetStaticProps = async (context) => {
     const tokenId = context.params?.tokenId as string;
   
-    const sdk = new ThirdwebSDK("mumbai");
+    const sdk = new ThirdwebSDK(NETWORK, {
+      secretKey: process.env.TW_SECRET_KEY,
+    });
   
     const contract = await sdk.getContract(NFT_COLLECTION_ADDRESS);
   
@@ -221,12 +376,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
         nft,
         contractMetadata: contractMetadata || null,
       },
-      revalidate: 1, // https://nextjs.org/docs/basic-features/data-fetching/incremental-static-regeneration
+      revalidate: 1, 
     };
   };
-
+  
   export const getStaticPaths: GetStaticPaths = async () => {
-    const sdk = new ThirdwebSDK("mumbai");
+    const sdk = new ThirdwebSDK(NETWORK, {
+      secretKey: process.env.TW_SECRET_KEY,
+    });
   
     const contract = await sdk.getContract(NFT_COLLECTION_ADDRESS);
   
