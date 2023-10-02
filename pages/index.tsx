@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 
+
 /**
  * Landing page with a simple gradient background and a hero asset.
  * Free to customize as you see fit.
@@ -58,7 +59,6 @@ const Home: NextPage = () => {
                 <Link className={styles.heroCta} href="/buy">
                   SHOP
                 </Link>
-                
               </div>
             </div>
           </div>

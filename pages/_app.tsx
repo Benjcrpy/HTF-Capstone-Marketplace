@@ -1,6 +1,7 @@
 import type { AppProps } from "next/app";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
-import { Navbar } from "../components/Navbar/Navbar";
+import  { Navbar } from "../components/Navbar/Navbar";
+import Footer from "../components/Footer/Footer"
 import NextNProgress from "nextjs-progressbar";
 import { NETWORK } from "../const/addresses";
 import "../styles/globals.css";
@@ -24,6 +25,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Navbar />
       {/* Render the actual component (page) */}
       <Component {...pageProps} />
+      <Footer/>
     </ThirdwebProvider>
   );
 }
