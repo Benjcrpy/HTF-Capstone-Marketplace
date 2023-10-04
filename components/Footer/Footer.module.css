@@ -2,7 +2,7 @@
     width: 100%;
     padding-block: 1.5rem;
     position: relative;
-    background-color: #2d2d2d;
+    
   }
   .footer_box {
     width: 80%;
@@ -27,6 +27,7 @@
     border-radius: 50%;
     transition: all 0.3s ease-in;
     display: grid;
+    cursor: pointer;
   }
   .footer_social a:hover {
     background-color: var(--icons-color);
@@ -41,7 +42,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem 2rem;
-    background-color: black;
+    background-color: rgb(43, 41, 41);
     color: var(--shadow-dark-color);
     border-radius: 5rem;
     margin-top: 3rem;

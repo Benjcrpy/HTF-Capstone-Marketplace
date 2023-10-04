@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=ADLaM+Display&family=Slackey&display=swap');
+
 .container {
+  font-family:  'ADLaM Display', cursive;;
   min-height: 99vh;
   min-width: 96vw;
   width: 100%;

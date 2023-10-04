@@ -1,8 +1,10 @@
+
 import type { NextPage } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
-
+import Footer from "../components/Footer/Footer"
+import Service from "../components/Service/Service";
 
 /**
  * Landing page with a simple gradient background and a hero asset.
@@ -10,7 +12,9 @@ import styles from "../styles/Home.module.css";
  */
 const Home: NextPage = () => {
   return (
+    
     <div className={styles.container}>
+      
       <div className={styles.content}>
         <div className={styles.hero}>
           <div className={styles.heroBackground}>
@@ -64,6 +68,9 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
+      <Service/>
+      <Footer/>
+      
     </div>
   );
 };
