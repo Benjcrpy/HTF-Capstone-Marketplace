@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import Footer from "../components/Footer/Footer"
+import HeroSection from "../components/TopFold/HeroSection"
 import Service from "../components/Service/Service";
 
 /**
@@ -13,8 +14,9 @@ import Service from "../components/Service/Service";
 const Home: NextPage = () => {
   return (
     
+    
     <div className={styles.container}>
-      
+      <HeroSection/>
       <div className={styles.content}>
         <div className={styles.hero}>
           <div className={styles.heroBackground}>
@@ -68,6 +70,8 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
+
+      
       <Service/>
       <Footer/>
       
