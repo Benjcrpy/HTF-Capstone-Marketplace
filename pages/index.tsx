@@ -6,6 +6,7 @@ import styles from "../styles/Home.module.css";
 import Footer from "../components/Footer/Footer"
 import HeroSection from "../components/TopFold/HeroSection"
 import Service from "../components/Service/Service";
+import Brand from "../components/Brand/Brand";
 
 /**
  * Landing page with a simple gradient background and a hero asset.
@@ -71,7 +72,7 @@ const Home: NextPage = () => {
         </div>
       </div>
 
-      
+      <Brand/>
       <Service/>
       <Footer/>
       
