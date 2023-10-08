@@ -49,18 +49,17 @@ const Footer = () => {
         {/* Menu Section */}
         <div className={Style.footer_box_discover}>
           <h3>Discover</h3>
-            <p>Build</p>
-            <p>Build</p>
-            <p>Build</p>
-            <p>Build</p>
+            <p>Listing</p>
+            <p>Sell</p>
+            <p>Buy</p>
+            <p>Direct Listing</p>
         </div>
 
         <div className={Style.footer_box_helpcenter}>
           <h3>Help Center</h3>
-            <p>Build</p>
-            <p>Build</p>
-            <p>Build</p>
-            <p>Build</p>
+            <p>Terms & Condition</p>
+            <p>Security</p>
+            <p>Blockchain</p>
         </div>
 
         {/* Subscribe Section */}
