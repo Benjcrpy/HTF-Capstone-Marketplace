@@ -13,8 +13,8 @@ const Service = () => {
           <Image src={images.service1} alt="Filer and Discover" width={100} height={100} />
           <div className={Style.service_box_item_step}>
             <span>Step 1</span>
-            <h3> Filter and Discover</h3>
-            <p>Connect with wallet, discover, buy NTFs, sell your NFTs and earn money</p>
+            <h3> Browse & Explore</h3>
+            <p>Browse through the famous collections of selected artist</p>
           </div>
         </div>
 
@@ -23,7 +23,7 @@ const Service = () => {
           <div className={Style.service_box_item_step}>
             <span>Step 2</span>
             <h3>Choose and Select</h3>
-            <p>Connect with wallet, discover, buy NTFs, sell your NFTs and earn money</p>
+            <p>Connect with any kinds E-wallet </p>
           </div>
         </div>
 
@@ -31,7 +31,7 @@ const Service = () => {
           <Image src={images.service3} alt="Connect Wallet" width={100} height={100} />
           <div className={Style.service_box_item_step}>
             <span>Step 3</span>
-            <h3>Connect Wallet</h3>
+            <h3>List your NFTs Collection</h3>
             <p>Connect with wallet, discover, buy NTFs, sell your NFTs and earn money</p>
           </div>
         </div>

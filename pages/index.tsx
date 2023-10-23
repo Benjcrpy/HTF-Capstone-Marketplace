@@ -45,12 +45,12 @@ const Home: NextPage = () => {
               <p className={styles.heroSubtitle}>
                 <Link
                   className={styles.link}
-                  href="https://thirdweb.com"
+                  href="https://www.facebook.com/profile.php?id=61552102599704"
                   target="_blank"
                 >
-                  thirdweb
+                  "HTF"
                 </Link>{" "}
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus, earum dolorem vitae nemo laborum nihil eligendi omnis pariatur facere saepe fuga voluptatibus veritatis itaque qui debitis perferendis reprehenderit dolores placeat?
+                The Happy Tree Friends NFT Marketplace, co-founded by Agapay Anthony, Lasim Kristella Mae, Lozada Enrico, Marquez George Anthony, Sembrano Kirby, and Serrano Denzel Joy, is a vibrant and imaginative digital hub celebrating the iconic animated series, "Happy Tree Friends." This marketplace is designed to offer fans and collectors a unique opportunity to own a piece of the gory yet charming world of these beloved characters.
               </p>
 
               <div className={styles.heroCtaContainer}>
