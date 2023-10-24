@@ -34,6 +34,7 @@
   .heroSection_box {
     grid-template-columns: 1fr;
     gap: 4rem;
+    padding-bottom: 3rem;
   }
 
   .heroSection_box_left {
