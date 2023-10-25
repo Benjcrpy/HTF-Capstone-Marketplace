@@ -12,7 +12,7 @@ import { RiSendPlaneFill } from "react-icons/ri";
 
 // INTERNAL IMPORTS
 import Style from "./Footer.module.css";
-import Tmc from "./Tmc/Tmc.module.css";
+
 
 
 const Footer = () => {
@@ -63,8 +63,7 @@ const Footer = () => {
           <a href="#" onClick={handleTMCClick}>
           <p className="FooterP">Terms and Condition</p>
         </a>
-        {showTMC && <Tmc />}
-        {isTMCVisible && <Tmc onClose={handleTMCClick} />}
+        
           <a href="https://mumbai.polygonscan.com/?fbclid=IwAR1Oav1DguwQUIvDKynDEb8qaSNPUajaw7Bjkylvj9DH48FwtfeYaZmTr5U"> <p className="FooterP">Blockchain</p> </a>
             
         </div>
