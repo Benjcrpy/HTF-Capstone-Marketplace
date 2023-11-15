@@ -11,6 +11,7 @@ import {
   import tokenPageStyles from "../styles/Token.module.css";
   import { NFT as NFTType } from "@thirdweb-dev/sdk";
   import SaleInfo from "../components/SaleInfo/SaleInfo";
+  import {Navbar}  from "../components/Navbar/Navbar";
   
   export default function Sell() {
     // Load all of the NFTs from the NFT Collection
@@ -21,7 +22,9 @@ import {
     const [selectedNft, setSelectedNft] = useState<NFTType>();
   
     return (
+      
       <Container maxWidth="lg">
+        <Navbar/>
         <h1>Sell NFTs</h1>
         {!selectedNft ? (
           <>

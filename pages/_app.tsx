@@ -1,17 +1,24 @@
 import type { AppProps } from "next/app";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import  { Navbar } from "../components/Navbar/Navbar";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+
 
 import NextNProgress from "nextjs-progressbar";
 import { NETWORK } from "../const/addresses";
 import "../styles/globals.css";
 
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThirdwebProvider
+
+ 
+
+      <ThirdwebProvider 
       clientId={process.env.NEXT_PUBLIC_TEMPLATE_CLIENT_ID}
       activeChain={NETWORK}
     >
+      
       {/* Progress bar when navigating between pages */}
       <NextNProgress
         color="var(--color-tertiary)"
@@ -20,13 +27,16 @@ function MyApp({ Component, pageProps }: AppProps) {
         height={3}
         showOnShallow={true}
       />
+      
 
       {/* Render the navigation menu above each component */}
-      <Navbar />
+      
       {/* Render the actual component (page) */}
-      <Component {...pageProps} />
+      <Component {...pageProps}  />
    
     </ThirdwebProvider>
+
+    
   );
 }
 

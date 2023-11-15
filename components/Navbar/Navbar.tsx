@@ -14,7 +14,7 @@ export function Navbar() {
     <div className={styles.navContainer}>
       <nav className={styles.nav}>
         <div className={styles.navLeft}>
-          <Link href="/" className={`${styles.homeLink} ${styles.navLeft}`}>
+          <Link href="/home" className={`${styles.homeLink} ${styles.navLeft}`}>
             <Image
               src="/htf.png"
               width={100}
