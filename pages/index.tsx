@@ -1,12 +1,13 @@
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { FormEvent } from "react";
 
 export default function Home() {
   const router = useRouter();
 
-  const logIn = (e) => {
-    e.preventDefault();
+  const logIn = (user: FormEvent<HTMLFormElement>) => {
+    user.preventDefault();
     Cookies.set("loggedin", "true");
     router.push("/home");
   };
@@ -19,7 +20,7 @@ export default function Home() {
         </nav>
       </Link>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <form onSubmit={(e) => logIn(e)}>
+        <form onSubmit={(user) => logIn(user)}>
           <h1>Log In</h1>
           <input type="text" placeholder="Username" required />
           <input type="password" placeholder="Password" required />
