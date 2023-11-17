@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { motion as m } from "framer-motion";
-import { GoogleOAuthProvider } from "@react-oauth/google";
+import { CredentialResponse, GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 import React, { useState } from 'react';
@@ -25,7 +25,6 @@ export default function Home() {
     console.log(credentialResponse);
     setLoggedIn(true);
 
-    // Redirect to a different website upon successful Google Sign-In
     window.location.href = "https://marketplace-benjcrpy.vercel.app/";
   };
 
@@ -53,6 +52,10 @@ export default function Home() {
       router.push({ pathname: "/home", query: values });
     },
   });
+
+  function credentialResponse(credentialResponse: CredentialResponse): void {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <m.div
@@ -186,9 +189,7 @@ export default function Home() {
                   
                 </div>
         
-                <div className="flex items-center gap-3">
-                
-
+  <div className="flex items-center gap-3">
       <input 
         type="checkbox" 
         name="terms"
@@ -200,13 +201,11 @@ export default function Home() {
         <p className="text-sm font-latoBold text-gray-500">
         Please check the box for log in your google
         </p> 
-  
-
-                </div>
+      </div>
                 {isChecked && (
         <GoogleOAuthProvider clientId="354546675754-l0qb6u36crsh957js7lt54soesom752j.apps.googleusercontent.com">
           <GoogleLogin
-            onSuccess={handleGoogleSignIn}
+            onSuccess={credentialResponse}
             onError={() => {
               console.log('Login Failed');
             }}
