@@ -5,9 +5,29 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { motion as m } from "framer-motion";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
+import React, { useState } from 'react';
+
 
 export default function Home() {
   const router = useRouter();
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
+  const handleGoogleSignIn = (credentialResponse) => {
+    const details = jwtDecode(credentialResponse.credential);
+    console.log(details);
+    console.log(credentialResponse);
+    setLoggedIn(true);
+
+    // Redirect to a different website upon successful Google Sign-In
+    window.location.href = "https://marketplace-benjcrpy.vercel.app/";
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -57,7 +77,7 @@ export default function Home() {
               Lets get started 👋
             </h1>
             <p className="text-lg  text-gray-500">
-              Please fill up the form in Below
+              Please fill up the form in Below or Agree to the terms and signup with google instead
             </p>
             <div className="mt-6 ">
               {/* Name input field */}
@@ -145,7 +165,9 @@ export default function Home() {
                   <input
                     type="checkbox"
                     name="terms"
+                    
                     value="checked"
+            
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     className="h-5 w-5 text-teal-500 border-2  background-gray-500 focus:border-teal-500 focus:ring-teal-500"
@@ -154,7 +176,26 @@ export default function Home() {
                     I agree to the Terms and Service that my data will be taken
                     and sold.
                   </p>
+                  
                 </div>
+                <div className="flex items-center gap-2">
+                
+  <label>
+        <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
+        I agree to the policy and privacy
+      </label>
+
+                </div>
+                {isChecked && (
+        <GoogleOAuthProvider clientId="354546675754-l0qb6u36crsh957js7lt54soesom752j.apps.googleusercontent.com" className="google-ri">
+          <GoogleLogin
+            onSuccess={handleGoogleSignIn}
+            onError={() => {
+              console.log('Login Failed');
+            }}
+          />
+        </GoogleOAuthProvider>
+      )}
               </div>
               <button
                 type="submit"
@@ -162,6 +203,7 @@ export default function Home() {
               >
                 Lets GET IN
               </button>
+              
             </div>
           </div>
           <div className="relative flex-1">
@@ -171,7 +213,9 @@ export default function Home() {
               priority
               src={formImage}
               alt="form-learn"
+              
             />
+  
           </div>
         </form>
       </main>
