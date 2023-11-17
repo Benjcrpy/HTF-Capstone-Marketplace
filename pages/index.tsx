@@ -76,10 +76,6 @@ export default function Home() {
             <h1 className="text-3xl pb-2 font-latoBold">
               Lets get started 👋
             </h1>
-
-            <p className="text-lg  text-slate-700">
-            Create your account. It’s free and only take a minute
-            </p>
             <p className="text-lg  text-gray-500">
               Please fill up the form in Below or Agree to the terms and signup with google instead
 
@@ -176,11 +172,11 @@ export default function Home() {
                   <input
                     type="checkbox"
                     name="terms"
-                    
                     value="checked"
-            
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
+             
+                 
                     className="h-5 w-5 text-teal-500 border-2  background-gray-500 focus:border-teal-500 focus:ring-teal-500"
                   />
                   <p className="text-sm font-latoBold text-gray-500">
@@ -189,12 +185,22 @@ export default function Home() {
                   </p>
                   
                 </div>
-                <div className="flex items-center gap-2">
+        
+                <div className="flex items-center gap-3">
                 
-  <label>
-        <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
-        I agree to the policy and privacy
-      </label>
+
+      <input 
+        type="checkbox" 
+        name="terms"
+        value="checked"
+        checked={isChecked} 
+        onChange={handleCheckboxChange}
+        className="h-5 w-5 text-teal-500 border-2  background-gray-500 focus:border-teal-500 focus:ring-teal-500"
+        />
+        <p className="text-sm font-latoBold text-gray-500">
+        Please check the box for log in your google
+        </p> 
+  
 
                 </div>
                 {isChecked && (
