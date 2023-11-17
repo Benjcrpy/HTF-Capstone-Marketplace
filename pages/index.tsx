@@ -1,49 +1,67 @@
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { FormEvent } from "react";
+
 import React, { useState } from 'react';
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from "jwt-decode";
-import Anthony from "./home"
+import { useForm } from "react-hook-form";
 
-const LoginForm = () => {
-  const [isChecked, setIsChecked] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
+export default function Home() {
+  const router = useRouter();
 
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
+  const logIn = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    Cookies.set("loggedin", "true");
+    router.push("/home");
   };
 
-  const handleGoogleSignIn = (credentialResponse: { credential: string; }) => {
-    const details = jwtDecode(credentialResponse.credential);
-    console.log(details);
-    console.log(credentialResponse);
-    setLoggedIn(true);
-
-    // Redirect to a different website upon successful Google Sign-In
-   
-  };
-
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const onSubmit = (data: any) => alert(JSON.stringify(data));
+ 
   return (
-    <div className={"login-container"}>
-      <label>
-        <input  type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
-        I agree to the terms and conditions
-      </label>
+    <React.Fragment>
+      <section>
+        <form onSubmit={(e) => logIn(e)} >
+          <div className="bg-black w-auto h-96 mx-5 mt-20 rounded-lg ">
+            <div className="h-28 flex justify-center items-center shadow">
+              <p className="uppercase text-4xl text-center">Validate checkbox input</p>
+            </div>
 
-      <br />
+            <div>
+              <div className="grid justify-center mt-16">
+                <div className="flex space-x-3">
+                  <div className="flex">
+                    <div className="grid justify-center">
+                      <input 
+                      type="checkbox"
+                      value='yes'
+                      className="w-6 h-6"
+                      {...register("agreement", { required: 'Agreement is required' })}
+                      />
+                    </div>
+                    <div>
+                      <p className="text-2xl">I Agree with the terms and condition</p>
+                    </div>
+                  </div>
+                    <div>
+                    {errors.agreement && <span className="text-sm text-red-800">This field is required</span>}
+                    </div>
+                </div>
 
-      {isChecked && (
-        <GoogleOAuthProvider  clientId="354546675754-l0qb6u36crsh957js7lt54soesom752j.apps.googleusercontent.com" >
-          <GoogleLogin
-            onSuccess={handleGoogleSignIn} 
-            onError={() => {
-            console.log('Login Failed');
-            }}
-          />
-        </GoogleOAuthProvider>
-      )}
-      {loggedIn && <Anthony/>}
-    </div>
+              </div>
+                <div className="flex justify-center items-center mt-16">
+              <input
+                type="submit"
+                value="submit"
+                className="w-2/5 h-10 font-bold text-white bg-yellow-500 rounded-lg cursor-pointer"
+              />
+              </div> 
+            </div>
+          </div>
+        </form>
+      </section>
+    </React.Fragment>
+    
   );
-};
-
-export default LoginForm;
+          
+}
