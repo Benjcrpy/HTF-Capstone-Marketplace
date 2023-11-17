@@ -1,82 +1,49 @@
+import React, { useState } from 'react';
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
+import Anthony from "./home"
 
-import type { NextPage } from "next";
-import Link from "next/link";
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
-import Footer from "../components/Footer/Footer"
-import HeroSection from "../components/TopFold/HeroSection"
-import Service from "../components/Service/Service";
-import Brand from "../components/Brand/Brand";
-import {Navbar}  from "../components/Navbar/Navbar";
+const LoginForm = () => {
+  const [isChecked, setIsChecked] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
 
+  const handleGoogleSignIn = (credentialResponse: { credential: string; }) => {
+    const details = jwtDecode(credentialResponse.credential);
+    console.log(details);
+    console.log(credentialResponse);
+    setLoggedIn(true);
 
+    // Redirect to a different website upon successful Google Sign-In
+   
+  };
 
-const home: NextPage = () => {
   return (
-    <div className={styles.container}>
-     <Navbar/>
-      <HeroSection/>
-      <div className={styles.content}>
-        <div className={styles.hero}>
-          <div className={styles.heroBackground}>
-            <div className={styles.heroBackgroundInner}>
-              <Image
-                src="/hero-gradient.png"
-                width={1390}
-                height={1390}
-                alt="Background gradient from red to blue"
-                quality={100}
-                className={styles.gradient}
-              />
-            </div>
-          </div>
-         
-          <div className={styles.heroBodyContainer}>
-            <div className={styles.heroBody}>
-              <h1 className={styles.heroTitle}>
-                <span className={styles.heroTitleGradient}>
-                  HAPPY TREE FRIENDS
-                </span>
-                <br />
-                MARKETPLACE
-              </h1>
-              <p className={styles.heroSubtitle}>
-                <Link
-                  className={styles.link}
-                  href="https://www.facebook.com/profile.php?id=61552102599704"
-                  target="_blank"
-                >
-                  HTF
-                </Link>{" "}
-                The Happy Tree Friends NFT Marketplace, 
-                co-founded by Agapay Anthony, 
-                Lasim Kristella Mae, 
-                Lozada Enrico, Marquez George Anthony, 
-                Sembrano Kirby, and 
-                Serrano Denzel Joy, 
-                is a vibrant and imaginative digital hub celebrating the iconic animated series, Happy Tree Friends.  
-                This marketplace is designed to offer fans and collectors a unique opportunity to own a piece of 
-                the gory yet charming world of these beloved characters.
-              </p>
+    <div className={"login-container"}>
+      <label>
+        <input  type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
+        I agree to the terms and conditions
+      </label>
 
-              <div className={styles.heroCtaContainer}>
-                <Link className={styles.heroCta} href="/buy">
-                  SHOP
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <br />
 
-      <Brand/>
-      <Service/>
-      <Footer/>
-      
+      {isChecked && (
+        <GoogleOAuthProvider  clientId="354546675754-l0qb6u36crsh957js7lt54soesom752j.apps.googleusercontent.com" >
+          <GoogleLogin
+            onSuccess={handleGoogleSignIn} 
+            onError={() => {
+            console.log('Login Failed');
+            }}
+          />
+        </GoogleOAuthProvider>
+      )}
+      {loggedIn && <Anthony/>}
     </div>
-    
   );
 };
 
-export default home;
+export default LoginForm;

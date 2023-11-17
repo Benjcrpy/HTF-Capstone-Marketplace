@@ -320,6 +320,8 @@
   }
 }
 
+
+
 /* Less than 640 px */
 @media (max-width: 640px) {
   .gradient {

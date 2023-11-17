@@ -50,6 +50,14 @@ a {
   text-decoration: none;
 }
 
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 1rem;
   border: 1px solid var(--highlighted-background);
