@@ -25,7 +25,6 @@ export default function Home() {
     console.log(credentialResponse);
     setLoggedIn(true);
 
-    window.location.href = "https://marketplace-benjcrpy.vercel.app/";
   };
 
   const formik = useFormik({
