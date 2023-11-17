@@ -54,7 +54,7 @@ export default function Home() {
         >
           <div className="flex-1 text-gray-700  p-20">
             <h1 className="text-3xl pb-2 font-latoBold">
-              Let's get started 👋
+              Lets get started 👋
             </h1>
             <p className="text-lg  text-gray-500">
               Please fill up the form in Below
@@ -160,7 +160,7 @@ export default function Home() {
                 type="submit"
                 className="bg-teal-500 font-latoBold text-sm text-white py-3 mt-6 rounded-lg w-full"
               >
-                Let's GET IN
+                Lets GET IN
               </button>
             </div>
           </div>
