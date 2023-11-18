@@ -56,8 +56,7 @@ const home: NextPage = () => {
                 Sembrano Kirby, and 
                 Serrano Denzel Joy, 
                 is a vibrant and imaginative digital hub celebrating the iconic animated series, Happy Tree Friends.  
-                This marketplace is designed to offer fans and collectors a unique opportunity to own a piece of 
-                the gory yet charming world of these beloved characters.
+                This marketplace is designed to offer fans and collectors a unique opportunity.
               </p>
 
               <div className={styles.heroCtaContainer}>
