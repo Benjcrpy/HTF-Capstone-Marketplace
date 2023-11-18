@@ -50,6 +50,11 @@ a {
   text-decoration: none;
 }
 
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: none;
+}
+
 
 
 @media (prefers-reduced-motion: no-preference) {
