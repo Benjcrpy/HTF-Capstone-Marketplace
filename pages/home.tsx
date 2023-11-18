@@ -12,10 +12,16 @@ import {Navbar}  from "../components/Navbar/Navbar";
 
 
 
+
+
 const home: NextPage = () => {
   return (
+    
+    
+
     <div className={styles.container}>
      <Navbar/>
+     
       <HeroSection/>
       <div className={styles.content}>
         <div className={styles.hero}>
