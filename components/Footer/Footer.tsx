@@ -34,7 +34,7 @@ const Footer = () => {
 
           {/* Social Section */}
           <div className={Style.footer_social}>
-            <a href="#">
+            <a href="https://www.facebook.com/profile.php?id=61552102599704&mibextid=ZbWKwL">
               <TiSocialFacebook />
             </a>
             <a href="https://twitter.com/HappytreeF19101">
@@ -43,7 +43,7 @@ const Footer = () => {
             <a href="https://www.youtube.com/channel/UCtPAoNtYhcEpuZ5WipjPPGQ">
               <TiSocialYoutube />
             </a>
-            <a href="#">
+            <a href="https://www.instagram.com/sarigamioyama/">
               <TiSocialInstagram />
             </a>
           </div>
