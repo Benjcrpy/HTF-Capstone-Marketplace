@@ -52,7 +52,7 @@ export default function Home() {
     },
   });
 
-  function credentialResponse(credentialResponse: CredentialResponse): void {
+  function credentialResponse(CredentialResponse: CredentialResponse): void {
     throw new Error("Function not implemented.");
   }
 
@@ -79,7 +79,7 @@ export default function Home() {
               Lets get started 👋
             </h1>
             <p className="text-lg  text-gray-500">
-              Please fill up the form in Below or Agree to the terms and signup with google instead
+              Please fill up the form in Below or Agree to the terms and sign up with google instead
 
             </p>
 

@@ -1,5 +1,5 @@
 .nftGridContainer {
-    font-family:  'ADLaM Display', cursive;;
+    font-family: Inter, Helvetica, Arial, sans-serif;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
