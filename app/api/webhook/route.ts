@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
 }
 
 const handleChargeSucceeded = async (charge: Stripe.Charge) => {
+ try {
   if (
     !ENGINE_URL ||
     !ENGINE_ACCESS_TOKEN ||
@@ -63,7 +64,8 @@ const handleChargeSucceeded = async (charge: Stripe.Charge) => {
   const engine = new Engine({
     url: ENGINE_URL,
     accessToken: ENGINE_ACCESS_TOKEN,
-  });
+  }); 
+  
   await engine.erc1155.mintTo(
     "mumbai",
     NEXT_PUBLIC_NFT_CONTRACT_ADDRESS,
@@ -81,4 +83,10 @@ const handleChargeSucceeded = async (charge: Stripe.Charge) => {
       },
     }
   );
+  console.log('NFT transfer successful.');
+  } catch (error: any) {
+    console.error('Error in handleChargeSucceeded:', error.message);
+    // Optionally, you can rethrow the error or handle it in a way appropriate for your application.
+    // throw error;
+  }
 };
