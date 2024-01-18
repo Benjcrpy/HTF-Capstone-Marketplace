@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2023-10-16",
 });
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
 }
 
 const handleChargeSucceeded = async (charge: Stripe.Charge) => {
- try {
+ 
   if (
     !ENGINE_URL ||
     !ENGINE_ACCESS_TOKEN ||
@@ -56,6 +57,7 @@ const handleChargeSucceeded = async (charge: Stripe.Charge) => {
   }
 
   const { buyerWalletAddress } = charge.metadata;
+  
   if (!buyerWalletAddress) {
     throw 'Webhook metadata is missing "buyerWalletAddress".';
   }
@@ -66,27 +68,14 @@ const handleChargeSucceeded = async (charge: Stripe.Charge) => {
     accessToken: ENGINE_ACCESS_TOKEN,
   }); 
   
-  await engine.erc1155.mintTo(
+  await engine.marketplaceDirectListings.buyFromListing(
     "mumbai",
     NEXT_PUBLIC_NFT_CONTRACT_ADDRESS,
     BACKEND_WALLET_ADDRESS,
     {
-      receiver: buyerWalletAddress,
-      metadataWithSupply: {
-        metadata: {
-          name: "Example NFT",
-          description: "Created with thirdweb Engine",
-          image:
-            "ipfs://QmciR3WLJsf2BgzTSjbG5zCxsrEQ8PqsHK7JWGWsDSNo46/nft.png",
-        },
-        supply: "1",
-      },
+      listingId: "18",
+      quantity: "1",
+      buyer: buyerWalletAddress,
     }
   );
-  console.log('NFT transfer successful.');
-  } catch (error: any) {
-    console.error('Error in handleChargeSucceeded:', error.message);
-    // Optionally, you can rethrow the error or handle it in a way appropriate for your application.
-    // throw error;
-  }
 };
